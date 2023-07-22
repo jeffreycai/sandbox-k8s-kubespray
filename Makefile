@@ -4,7 +4,7 @@ ifneq (,$(wildcard ./.env))
     export
 endif
 
-VAGRANT_CONFIG ?= ../config.rb
+VAGRANT_CONFIG ?= ../vagrant/config.rb
 
 
 # .PHONEY
@@ -15,15 +15,23 @@ VAGRANT_CONFIG ?= ../config.rb
 init:
 	@if [ ! -d "kubespray" ]; then \
 		git clone https://github.com/kubernetes-sigs/kubespray.git ; \
-		python3 -m pip install netaddr jmespath
-		ansible-galaxy collection install ansible.posix community.general kubernetes.core ansible.netcommon
+		cd kubespray ; \
+		git checkout $(KUBESPRAY_CHECKPOINT_COMMIT_ID) ; \
+		git apply ../vagrant/Vagrantfile.diff ; \
+		mkdir vagrant ; \
+		ln -s $(CURDIR)/vagrant/config.rb $(CURDIR)/kubespray/vagrant/config.rb ; \
+		python3 -m pip install netaddr jmespath ; \
+		ansible-galaxy collection install ansible.posix community.general kubernetes.core ansible.netcommon ; \
 	fi
 
 kubeconfig:
-	cd kubespray && vagrant ssh-config k8s-1 > /tmp/ssh-config && \
-		ssh -F /tmp/ssh-config k8s-1 'sudo cp /etc/kubernetes/admin.conf /home/vagrant && sudo chmod 0644 /home/vagrant/admin.conf'
-		scp -F /tmp/ssh-config k8s-1:/home/vagrant/admin.conf ~/.kube/config
+	@bash shell/update_kubeconfig.sh
 
+up:
+	cd kubespray && vagrant up
+
+provision_shell:
+	cd kubespray && vagrant provsion --provision-with shell
 
 # VBox jobs
 vmlist:
