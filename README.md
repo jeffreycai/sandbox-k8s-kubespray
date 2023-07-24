@@ -48,6 +48,21 @@ To change the bootstrap script that runs during provision the nodes (e.g. instal
 make up
 ```
 
+5. Generate `kubeconfig` file to access the cluster
+
+Run `make kubeconfig` to generate the kubeconfig file. The file will be named as `${CLUSTER_INSTANCE_PREFIX}.admin.conf`.
+Update your local kubeconfig file on your host machine, i.e. `~/.kube/config`, with the content of the file. or, update `KUBECONFIG` env var to point to the kubeconfig file.
+
+```
+export KUBECONFIG=$(pwd)/${CLUSTER_INSTANCE_PREFIX}.admin.conf
+```
+
+6. Enjoy Kubernetes!
+
+```
+kubectl get nodes
+```
+
 ## Managing the Cluster
 
 ```
