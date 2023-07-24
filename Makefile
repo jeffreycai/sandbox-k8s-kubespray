@@ -8,7 +8,7 @@ VAGRANT_CONFIG ?= ../vagrant/config.rb
 
 
 # .PHONEY
-.PHONEY: up halt destroy trybuild rebuild status ssh vmlist vmdestroy logcleanup
+.PHONEY: init kubeconfig up halt provision_shell status vmlist vmdestroy
 
 
 # Vagrant jobs
@@ -30,8 +30,17 @@ kubeconfig:
 up:
 	cd kubespray && vagrant up
 
+halt:
+	cd kubespray && vagrant halt
+
+destroy:
+	cd kubespray && vagrant destroy
+
+status:
+	cd kubespray && vagrant status
+
 provision_shell:
-	cd kubespray && vagrant provsion --provision-with shell
+	cd kubespray && vagrant provision --provision-with shell
 
 # VBox jobs
 vmlist:
