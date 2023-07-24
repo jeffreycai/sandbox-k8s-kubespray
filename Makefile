@@ -8,7 +8,7 @@ VAGRANT_CONFIG ?= ../vagrant/config.rb
 
 
 # .PHONEY
-.PHONEY: init kubeconfig up halt provision_shell status vmlist vmdestroy
+.PHONEY: init kubeconfig up halt destroy status provision_shell provision status vmlist vmdestroy
 
 
 # Vagrant jobs
@@ -42,8 +42,11 @@ status:
 provision_shell:
 	cd kubespray && vagrant provision --provision-with shell
 
+provision:
+	cd kubespray && vagrant provision
+
 # VBox jobs
 vmlist:
 	VBoxManage list vms
 vmdestroy:
-	VBoxManage list vms | cut -d ' ' -f 1 | sed -e "s/\"//g" | xargs -I {} VBoxManage unregistervm {} --delete
+	VBoxManage list vms | cut -d ' ' -f 1 | sed -e "s/\"//g" | grep $(CLUSTER_INSTANCE_PREFIX) | xargs -I {} VBoxManage unregistervm {} --delete

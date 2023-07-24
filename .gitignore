@@ -1,2 +1,2 @@
 kubespray
-admin.conf
+*.admin.conf
