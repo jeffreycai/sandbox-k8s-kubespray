@@ -1,0 +1,7 @@
+- name: delete common namespace
+  kubernetes.core.k8s:
+    name: "{{ item }}"
+    api_version: v1
+    kind: Namespace
+    state: absent
+  loop: "{{ namespaces }}"

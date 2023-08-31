@@ -1,0 +1,13 @@
+---
+- name: Add Nginx helm repository
+  kubernetes.core.helm_repository:
+    name: "{{ name }}"
+    repo_url: "{{ helm_repo_url }}"
+
+- name: Deploy Nginx Ingress chart 
+  kubernetes.core.helm:
+    name: "{{ name }}-{{ release_name }}"
+    chart_ref: "{{ helm_chart_ref }}"
+    chart_version: "{{ helm_chart_version }}"
+    values: "{{ lookup('template', 'templates/helm-chart-values.yaml.j2') | from_yaml }}"
+    release_namespace: "{{ namespace }}"

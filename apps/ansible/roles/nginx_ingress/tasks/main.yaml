@@ -1,0 +1,6 @@
+---
+- include_tasks: install.yaml
+  when: action == "install"
+
+- include_tasks: uninstall.yaml
+  when: action == "uninstall"

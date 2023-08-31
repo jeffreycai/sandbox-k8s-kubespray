@@ -1,0 +1,31 @@
+---
+- name: Kubernetes Cluster Playbook - Clean Up
+  connection: local
+  gather_facts: false
+  hosts: local
+  vars:
+    ansible_python_interpreter: "{{ python_path }}"
+  tasks:
+    - name: Clean up ALL Kubernetes Cluster
+      block:
+        - name: Uninstall Nginx Ingress Controller
+          include_role:
+            name: nginx_ingress
+          vars:
+            action: uninstall
+
+        - name: Uninstall Common Namespaces
+          include_role:
+            name: common_namespaces
+          vars:
+            action: uninstall
+      when: role == 'all' or role == ''
+
+    - name: Uninstall an individual component
+      block:
+        - name: "Uninstall Role {{ role }}"
+          include_role:
+            name: "{{ role }}"
+          vars:
+            action: uninstall
+      when: role != ''

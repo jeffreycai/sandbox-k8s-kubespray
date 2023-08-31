@@ -1,0 +1,16 @@
+---
+- name: Delete Nginx Ingress chart 
+  community.kubernetes.helm:
+    name: "{{ name }}-{{ release_name }}"
+    chart_ref: "{{ helm_chart_ref }}"
+    chart_version: "{{ helm_chart_version }}"
+    values: "{{ lookup('template', 'templates/helm-chart-values.yaml.j2') | from_yaml }}"
+    release_namespace: "{{ namespace }}"
+    state: absent
+    wait: true
+
+- name: Remove Nginx helm repository
+  community.kubernetes.helm_repository:
+    name: nginx
+    repo_url: "{{ helm_repo_url }}"
+    state: absent

@@ -1,0 +1,6 @@
+---
+namespaces:
+  - name: kubeops
+    prometheus: "true"
+  - name: sandbox
+    prometheus: "true"

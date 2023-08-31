@@ -1,0 +1,6 @@
+---
+name: nginx-ingress
+namespace: "{{ ops_namespace }}"
+helm_chart_version: "0.9.3"
+helm_chart_ref: "{{ name }}/nginx-ingress"
+helm_repo_url: "https://helm.nginx.com/stable"

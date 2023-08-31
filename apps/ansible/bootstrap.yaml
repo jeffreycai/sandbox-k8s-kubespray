@@ -1,0 +1,38 @@
+---
+- name: Kubernetes Cluster Playbook - Bootstrap
+  connection: local
+  gather_facts: false
+  hosts: local
+  vars:
+    ansible_python_interpreter: "{{ python_path }}"
+  tasks:
+    - name: Bootstrap Kubernetes Cluster
+      block:
+        - name: Install Common Namespaces
+          include_role:
+            name: common_namespaces
+          vars:
+            action: install
+#        - name: Install Nginx Ingress Controller
+#          include_role:
+#            name: nginx_ingress
+#          vars:
+#            action: install
+#
+#        - name: Install Prometheus Stack
+#          include_role:
+#            name: prometheus
+#          vars:
+#            action: install
+#
+#        - name: Install Loki Stack
+#          include_role:
+#            name: loki
+#          vars:
+#            action: install
+#
+#        - name: Install Metrics Server
+#          include_role:
+#            name: metrics_server
+#          vars:
+#            action: install
