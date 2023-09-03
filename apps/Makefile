@@ -17,7 +17,7 @@ bootstrap: ansible_galaxy
 	    -i ansible/hosts \
 		-e "release_name=$(RELEASE_NAME)" \
 		-e "python_path=$(PYTHON_PATH)"
-.PHONY: start
+.PHONY: bootstrap
 
 #sample_app:
 #	@ansible-playbook ansible/sample_app.yaml \
@@ -31,4 +31,4 @@ cleanup: ansible_galaxy
 	    -i ansible/hosts \
 		-e "release_name=$(RELEASE_NAME)" \
 		-e "python_path=$(PYTHON_PATH)"
-.phony: cleanup
+.PHONY: cleanup

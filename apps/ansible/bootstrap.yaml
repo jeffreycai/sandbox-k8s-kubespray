@@ -13,12 +13,12 @@
             name: common_namespaces
           vars:
             action: install
-#        - name: Install Nginx Ingress Controller
-#          include_role:
-#            name: nginx_ingress
-#          vars:
-#            action: install
-#
+        - name: Install Nginx Ingress Controller
+          include_role:
+            name: nginx_ingress
+          vars:
+            action: install
+
 #        - name: Install Prometheus Stack
 #          include_role:
 #            name: prometheus

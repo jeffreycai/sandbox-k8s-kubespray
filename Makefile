@@ -45,6 +45,10 @@ provision_shell:
 provision:
 	cd kubespray && vagrant provision
 
+ssh:
+	@read -p "Enter node id: " target; \
+	cd kubespray && vagrant ssh $(CLUSTER_INSTANCE_PREFIX)-$$target
+
 # VBox jobs
 vmlist:
 	VBoxManage list vms
