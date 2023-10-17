@@ -8,7 +8,7 @@ VAGRANT_CONFIG ?= ../vagrant/config.rb
 
 
 # .PHONEY
-.PHONEY: init kubeconfig up halt destroy status provision_shell provision status vmlist vmdestroy
+.PHONEY: init kubeconfig up halt destroy status provision_shell provision status vmlist vmdestroy node_ips
 
 
 # Vagrant jobs
@@ -48,6 +48,10 @@ provision:
 ssh:
 	@read -p "Enter node id: " target; \
 	cd kubespray && vagrant ssh $(CLUSTER_INSTANCE_PREFIX)-$$target
+
+nodeips:
+	@cd vagrant/scripts && bash node_ips.sh
+
 
 # VBox jobs
 vmlist:
