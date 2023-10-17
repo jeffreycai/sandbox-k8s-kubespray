@@ -1,0 +1,69 @@
+---
+- name: Clone the NGINX Ingress Controller repository
+  git:
+    repo: 'https://github.com/nginxinc/kubernetes-ingress.git'
+    dest: '/tmp/kubernetes-ingress'
+    version: 'v3.2.1'
+    update: yes
+    force: yes
+
+- name: Create namespace and service account
+  k8s:
+    src: '/tmp/kubernetes-ingress/deployments/common/ns-and-sa.yaml'
+
+- name: Create cluster role and cluster role binding
+  k8s:
+    src: '/tmp/kubernetes-ingress/deployments/rbac/rbac.yaml'
+
+# Create Common Resources
+
+- name: Create a secret for default server
+  k8s:
+    src: '/tmp/kubernetes-ingress/deployments/../examples/shared-examples/default-server-secret/default-server-secret.yaml'
+
+- name: Create a config map for NGINX
+  k8s:
+    src: '/tmp/kubernetes-ingress/deployments/common/nginx-config.yaml'
+
+- name: Create an IngressClass resource
+  k8s:
+    src: '/tmp/kubernetes-ingress/deployments/common/ingress-class.yaml'
+
+# Create Custom Resources
+
+- name: Create custom resource definitions - 1
+  k8s:
+    src: '/tmp/kubernetes-ingress/deployments/common/crds/k8s.nginx.org_virtualservers.yaml'
+
+- name: Create custom resource definitions - 2
+  k8s:
+    src: '/tmp/kubernetes-ingress/deployments/common/crds/k8s.nginx.org_virtualserverroutes.yaml'
+
+- name: Create custom resource definitions - 3
+  k8s:
+    src: '/tmp/kubernetes-ingress/deployments/common/crds/k8s.nginx.org_transportservers.yaml'
+
+- name: Create custom resource definitions - 4
+  k8s:
+    src: '/tmp/kubernetes-ingress/deployments/common/crds/k8s.nginx.org_policies.yaml'
+
+# Deploying NGINX Ingress Controller as Deployment
+
+- name: Deploy NGINX Ingress Controller (Deployment)
+  k8s:
+    src: '/tmp/kubernetes-ingress/deployments/deployment/nginx-ingress.yaml'
+
+# Check if NGINX Ingress Controller is running
+
+- name: Check that NGINX Ingress Controller is Running
+  command: kubectl get pods --namespace=nginx-ingress
+  register: result
+  until: "'Running' in result.stdout"
+  retries: 12
+  delay: 5
+
+# Create Service for NGINX Ingress Controller Pods (NodePort as example)
+
+- name: Create a NodePort service
+  k8s:
+    src: '/tmp/kubernetes-ingress/deployments/service/nodeport.yaml'

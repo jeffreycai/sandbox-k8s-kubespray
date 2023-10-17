@@ -1,0 +1,72 @@
+---
+- name: Deploy Simple HTTP Server (nginx)
+  k8s:
+    namespace: sandbox
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: test-nginx
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: test-nginx
+        template:
+          metadata:
+            labels:
+              app: test-nginx
+          spec:
+            containers:
+            - name: nginx
+              image: nginx:latest
+              ports:
+              - containerPort: 80
+
+# Expose the HTTP server within the cluster using a service
+- name: Create Service for Simple HTTP Server
+  k8s:
+    namespace: sandbox
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: test-nginx-service
+      spec:
+        type: ClusterIP
+        ports:
+        - port: 80
+          targetPort: 80
+        selector:
+          app: test-nginx
+
+# Create an Ingress to route external traffic to the service
+- name: Create Ingress for Simple HTTP Server
+  k8s:
+    namespace: sandbox
+    definition:
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: test-nginx-ingress
+        annotations:
+          nginx.ingress.kubernetes.io/rewrite-target: /
+      spec:
+        rules:
+        - http:
+            paths:
+            - path: /test
+              pathType: Prefix
+              backend:
+                service:
+                  name: test-nginx-service
+                  port:
+                    number: 80
+
+# Check if the test-nginx pod is running
+- name: Check that test-nginx Pod is Running
+  command: kubectl get pods -l app=test-nginx --namespace=sandbox
+  register: test_result
+  until: "'Running' in test_result.stdout"
+  retries: 12
+  delay: 5

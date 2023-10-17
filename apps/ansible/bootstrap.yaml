@@ -13,11 +13,18 @@
             name: common_namespaces
           vars:
             action: install
-        - name: Install Nginx Ingress Controller
+
+        - name: Install Nginx Ingress Controller - Raw
           include_role:
-            name: nginx_ingress
+            name: nginx_ingress_raw
           vars:
             action: install
+
+#        - name: Install Nginx Ingress Controller - Helm
+#          include_role:
+#            name: nginx_ingress
+#          vars:
+#            action: install
 
 #        - name: Install Prometheus Stack
 #          include_role:
@@ -36,3 +43,12 @@
 #            name: metrics_server
 #          vars:
 #            action: install
+
+
+    - name: Bootstrap Sample App
+      block:
+        - name: Deploy wordpress
+          include_role:
+            name: sample_app_wp
+          vars:
+            action: install
